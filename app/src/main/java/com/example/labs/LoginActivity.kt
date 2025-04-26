@@ -1,6 +1,8 @@
 package com.example.labs
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -22,6 +24,11 @@ class LoginActivity : AppCompatActivity() {
 
         navBar.setNavigationOnClickListener {
             finish()
+        }
+
+        findViewById<Button>(R.id.loginButton).setOnClickListener {
+            val intent: Intent = Intent(this, CoreActivity::class.java)
+            startActivity(intent)
         }
     }
 }
