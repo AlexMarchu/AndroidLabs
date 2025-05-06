@@ -1,10 +1,12 @@
 package com.example.labs
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import com.example.labs.databinding.FragmentActivityBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -42,6 +44,11 @@ class ActivityFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        view.findViewById<Button>(R.id.newButton).setOnClickListener {
+            val intent: Intent = Intent(requireActivity(), NewActivity::class.java)
+            startActivity(intent)
+        }
         val adapter = VPAdapter(this)
 
         binding.viewPager.adapter = adapter

@@ -1,6 +1,8 @@
 package com.example.labs
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -8,6 +10,11 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class CoreActivity : AppCompatActivity() {
+
+    lateinit var fragmentActivity: ActivityFragment
+    lateinit var fragmentProfile: ProfileFragment
+    lateinit var fragmentPasswordChange: PasswordChangeFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -18,13 +25,16 @@ class CoreActivity : AppCompatActivity() {
             insets
         }
 
-        val fragmentActivity = ActivityFragment.newInstance("", "")
-        val fragmentProfile = ProfileFragment.newInstance("", "")
+        fragmentActivity = ActivityFragment.newInstance("", "")
+        fragmentProfile = ProfileFragment.newInstance("", "")
+        fragmentPasswordChange = PasswordChangeFragment.newInstance("", "")
 
         supportFragmentManager.beginTransaction().apply {
             add(R.id.fragmentContainerView, fragmentActivity, "activity")
             add(R.id.fragmentContainerView, fragmentProfile, "profile")
+            add(R.id.fragmentContainerView, fragmentPasswordChange, "passwordChange")
             hide(fragmentProfile)
+            hide(fragmentPasswordChange)
             commit()
         }
 
@@ -34,6 +44,7 @@ class CoreActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction().apply {
                         show(fragmentActivity)
                         hide(fragmentProfile)
+                        hide(fragmentPasswordChange)
                         commit()
                     }
                     true
@@ -43,12 +54,23 @@ class CoreActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction().apply {
                         show(fragmentProfile)
                         hide(fragmentActivity)
+                        hide(fragmentPasswordChange)
                         commit()
                     }
                     true
                 }
                 else -> false
             }
+        }
+    }
+
+    fun showPasswordChangeFragment() {
+        supportFragmentManager.beginTransaction().apply {
+            hide(fragmentActivity)
+            hide(fragmentProfile)
+            show(fragmentPasswordChange)
+            addToBackStack(null)
+            commit()
         }
     }
 }
