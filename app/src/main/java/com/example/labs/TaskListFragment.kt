@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.activityViewModels
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,11 +24,13 @@ class TaskListFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private val viewModel: MyVM by activityViewModels()
+    private var showOnlyMyActivities = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            showOnlyMyActivities = it.getBoolean(ARG_SHOW_ONLY_MY, true)
         }
     }
 
@@ -41,7 +44,17 @@ class TaskListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler)
-        recyclerView.adapter = RVAdapter()
+        val adapter = RVAdapter()
+        recyclerView.adapter = adapter
+
+        viewModel.allActivities.observe(viewLifecycleOwner) { activities ->
+            val filteredActivities = if (showOnlyMyActivities) {
+                activities.filter { it.user == "me" }
+            } else {
+                emptyList()
+            }
+            adapter.updateData(filteredActivities)
+        }
 
         recyclerView.addItemDecoration(
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
@@ -59,14 +72,15 @@ class TaskListFragment : Fragment() {
          * @param param2 Parameter 2.
          * @return A new instance of fragment TaskListFragment.
          */
-        // TODO: Rename and change types and number of parameters
+        private const val ARG_SHOW_ONLY_MY = "show_only_my"
+
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TaskListFragment().apply {
+        fun newInstance(showOnlyMyActivities: Boolean): TaskListFragment {
+            return TaskListFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putBoolean(ARG_SHOW_ONLY_MY, showOnlyMyActivities)
                 }
             }
+        }
     }
 }

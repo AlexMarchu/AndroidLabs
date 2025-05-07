@@ -7,8 +7,10 @@ import com.example.labs.R
 
 class ActivityTypeAdapter(
     private val items: List<String>,
-//    private val onItemClick: (String) -> Unit
+    private val onItemSelected: (String) -> Unit
 ) : RecyclerView.Adapter<ActivityTypeAdapter.ViewHolder>() {
+
+    private var selectedPosition = -1
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView = view.findViewById(R.id.activityNameTextView)
@@ -22,8 +24,19 @@ class ActivityTypeAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.textView.text = items[position]
-//        holder.itemView.setOnClickListener { onItemClick(items[position]) }
+
+        holder.itemView.isSelected = position == selectedPosition
+
+        holder.itemView.setOnClickListener {
+            selectedPosition = position
+            onItemSelected(items[position])
+            notifyDataSetChanged()
+        }
     }
 
     override fun getItemCount() = items.size
+
+    fun getSelectedItem(): String? {
+        return if (selectedPosition != -1) items[selectedPosition] else null
+    }
 }
